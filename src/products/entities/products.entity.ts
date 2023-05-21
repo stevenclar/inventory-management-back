@@ -4,11 +4,13 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { EntityHelper } from 'src/utils/entity-helper';
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity()
 export class Product extends EntityHelper {
@@ -29,6 +31,11 @@ export class Product extends EntityHelper {
   @Index()
   @Column({ type: String, default: 'unit' })
   measure: string | null;
+
+  @ManyToOne(() => User, {
+    eager: true,
+  })
+  user?: User | null;
 
   @CreateDateColumn()
   createdAt: Date;

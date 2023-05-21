@@ -4,6 +4,7 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  ManyToOne,
   OneToMany,
   PrimaryColumn,
   UpdateDateColumn,
@@ -11,6 +12,7 @@ import {
 import { EntityHelper } from 'src/utils/entity-helper';
 import { Inventory } from 'src/inventories/entities/inventories.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity()
 export class Company extends EntityHelper {
@@ -32,6 +34,11 @@ export class Company extends EntityHelper {
 
   @OneToMany(() => Inventory, (inventory) => inventory.company, { eager: true })
   inventories?: Inventory[];
+
+  @ManyToOne(() => User, {
+    eager: true,
+  })
+  user?: User | null;
 
   @CreateDateColumn()
   createdAt: Date;
