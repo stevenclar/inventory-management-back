@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { FilesModule } from './files/files.module';
 import { AuthModule } from './auth/auth.module';
@@ -32,6 +32,7 @@ import { CompaniesModule } from './companies/companies.module';
 import { ProductsModule } from './products/products.module';
 import { InventoriesModule } from './inventories/inventories.module';
 import { PdfModule } from './pdf/pdf.module';
+import { AuthMiddleware } from './auth/auth.middleware';
 
 @Module({
   imports: [
@@ -95,7 +96,7 @@ import { PdfModule } from './pdf/pdf.module';
   ],
 })
 export class AppModule {
-  // configure(consumer: MiddlewareConsumer) {
-  //   // consumer.apply(AuthMiddleware).forRoutes('*');
-  // }
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes('*');
+  }
 }
