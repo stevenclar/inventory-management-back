@@ -13,6 +13,8 @@ import {
   HttpStatus,
   HttpCode,
   Req,
+  Response,
+  NotFoundException,
 } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
@@ -26,6 +28,10 @@ import { infinityPagination } from 'src/utils/infinity-pagination';
 import { InfinityPaginationResultType } from '../utils/types/infinity-pagination-result.type';
 import { NullableType } from '../utils/types/nullable.type';
 import { Company } from './entities/companies.entity';
+import { companyDocDefinition } from 'src/utils/doc-definitions';
+import { MailDataAttachment } from 'src/mail/interfaces/mail-data.interface';
+import { PdfService } from 'src/pdf/pdf.service';
+import { MailService } from 'src/mail/mail.service';
 
 @ApiTags('Company')
 @Controller({
@@ -33,7 +39,11 @@ import { Company } from './entities/companies.entity';
   version: '1',
 })
 export class CompaniesController {
-  constructor(private readonly companiesService: CompaniesService) {}
+  constructor(
+    private readonly companiesService: CompaniesService,
+    private readonly pdfService: PdfService,
+    private readonly mailService: MailService,
+  ) {}
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -120,5 +130,49 @@ export class CompaniesController {
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') nit: string): Promise<void> {
     return this.companiesService.softDelete(nit);
+  }
+
+  @Get('pdf/:id')
+  // @Header('Content-Type', 'application/pdf')
+  @HttpCode(HttpStatus.OK)
+  async downloadInventory(@Param('nit') nit: string, @Response() response) {
+    const company = await this.companiesService.findOne({ nit });
+    if (company) {
+      const pdfBuffer = await this.pdfService.createPdf(
+        companyDocDefinition(company),
+      );
+      response.send(pdfBuffer);
+    } else {
+      return new NotFoundException('Company not found');
+    }
+  }
+
+  @Get('send-pdf/:id/:email')
+  @HttpCode(HttpStatus.OK)
+  async testSendEmail(
+    @Param('nit') nit: string,
+    @Param('email') email: string,
+  ) {
+    const company = await this.companiesService.findOne({ nit });
+    if (company) {
+      const pdfBase64 = await this.pdfService.createPdfBase64(
+        companyDocDefinition(company),
+      );
+
+      const attachments: MailDataAttachment[] = [
+        {
+          filename: 'inventory.pdf',
+          content: pdfBase64,
+          encoding: 'base64',
+        },
+      ];
+
+      await this.mailService.sendAttachmentsFiles({
+        to: email,
+        data: { attachments },
+      });
+      return { message: 'Email sent' };
+    }
+    return new NotFoundException('Company not found');
   }
 }
