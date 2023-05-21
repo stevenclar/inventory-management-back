@@ -4,31 +4,33 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { EntityHelper } from 'src/utils/entity-helper';
-import { ApiProperty } from '@nestjs/swagger';
+import { Product } from 'src/products/entities/products.entity';
+import { Company } from 'src/companies/entities/companies.entity';
 
 @Entity()
-export class Product extends EntityHelper {
-  @ApiProperty({ example: 1 })
+export class Inventory extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Index()
-  @Column({ type: String })
-  name: string | null;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   description: string | null;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  price: number | null;
-
   @Index()
-  @Column({ type: String, default: 'unit' })
-  measure: string | null;
+  @Column({ type: 'numeric' })
+  availableQuantity: number | null;
+
+  @ManyToOne(() => Product, {
+    eager: true,
+  })
+  product?: Product | null;
+
+  @ManyToOne(() => Company)
+  company?: Company | null;
 
   @CreateDateColumn()
   createdAt: Date;

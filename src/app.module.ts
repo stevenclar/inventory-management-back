@@ -30,6 +30,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
 import { CompaniesModule } from './companies/companies.module';
 import { ProductsModule } from './products/products.module';
+import { InventoriesModule } from './inventaries/inventories.module';
 
 @Module({
   imports: [
@@ -88,6 +89,7 @@ import { ProductsModule } from './products/products.module';
     HomeModule,
     CompaniesModule,
     ProductsModule,
+    InventoriesModule,
   ],
 })
 export class AppModule {}
