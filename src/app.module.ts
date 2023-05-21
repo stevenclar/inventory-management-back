@@ -30,7 +30,8 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
 import { CompaniesModule } from './companies/companies.module';
 import { ProductsModule } from './products/products.module';
-import { InventoriesModule } from './inventaries/inventories.module';
+import { InventoriesModule } from './inventories/inventories.module';
+import { PdfModule } from './pdf/pdf.module';
 
 @Module({
   imports: [
@@ -90,6 +91,11 @@ import { InventoriesModule } from './inventaries/inventories.module';
     CompaniesModule,
     ProductsModule,
     InventoriesModule,
+    PdfModule,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  // configure(consumer: MiddlewareConsumer) {
+  //   // consumer.apply(AuthMiddleware).forRoutes('*');
+  // }
+}
