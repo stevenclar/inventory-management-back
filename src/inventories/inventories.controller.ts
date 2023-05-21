@@ -27,7 +27,7 @@ import { NullableType } from '../utils/types/nullable.type';
 import { Inventory } from './entities/inventories.entity';
 
 @ApiBearerAuth()
-@Roles(RoleEnum.admin)
+@Roles(RoleEnum.admin, RoleEnum.user)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('Inventory')
 @Controller({

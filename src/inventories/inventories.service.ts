@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Inventory } from './entities/inventories.entity';
-import { DeepPartial, Repository } from 'typeorm';
+import {
+  DeepPartial,
+  FindManyOptions,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
@@ -22,11 +27,16 @@ export class InventoriesService {
 
   findManyWithPagination(
     paginationOptions: IPaginationOptions,
+    productWhereOptions?: FindOptionsWhere<Inventory>,
   ): Promise<Inventory[]> {
-    return this.inventoriesRepository.find({
+    const findManyOptions: FindManyOptions<Inventory> = {
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
-    });
+    };
+    if (productWhereOptions) {
+      findManyOptions.where = productWhereOptions;
+    }
+    return this.inventoriesRepository.find(findManyOptions);
   }
 
   findOne(

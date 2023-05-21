@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/products.entity';
-import { DeepPartial, Repository } from 'typeorm';
+import {
+  DeepPartial,
+  FindManyOptions,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { IPaginationOptions } from 'src/utils/types/pagination-options';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
@@ -20,11 +25,16 @@ export class ProductsService {
 
   findManyWithPagination(
     paginationOptions: IPaginationOptions,
+    productWhereOptions?: FindOptionsWhere<Product>,
   ): Promise<Product[]> {
-    return this.productRepository.find({
+    const findManyOptions: FindManyOptions<Product> = {
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
-    });
+    };
+    if (productWhereOptions) {
+      findManyOptions.where = productWhereOptions;
+    }
+    return this.productRepository.find(findManyOptions);
   }
 
   findOne(fields: EntityCondition<Product>): Promise<NullableType<Product>> {
