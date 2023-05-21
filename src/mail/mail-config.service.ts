@@ -57,7 +57,6 @@ export class MailConfigService implements MailerOptionsFactory {
             }) ?? '',
         },
       });
-      console.log('ses', ses.config.credentials());
       mailerOptions.transport.SES = {
         ses,
         aws,
