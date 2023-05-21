@@ -12,6 +12,7 @@ import {
   ParseIntPipe,
   HttpStatus,
   HttpCode,
+  Req,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -26,9 +27,6 @@ import { InfinityPaginationResultType } from '../utils/types/infinity-pagination
 import { NullableType } from '../utils/types/nullable.type';
 import { Product } from './entities/products.entity';
 
-@ApiBearerAuth()
-@Roles(RoleEnum.admin)
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('Product')
 @Controller({
   path: 'products',
@@ -37,6 +35,9 @@ import { Product } from './entities/products.entity';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  @ApiBearerAuth()
+  @Roles(RoleEnum.admin, RoleEnum.user)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createProfileDto: CreateProductDto): Promise<Product> {
@@ -62,12 +63,45 @@ export class ProductsController {
     );
   }
 
+  @ApiBearerAuth()
+  @Roles(RoleEnum.admin, RoleEnum.user)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Get('mine')
+  @HttpCode(HttpStatus.OK)
+  async myProducts(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Req() req,
+  ): Promise<InfinityPaginationResultType<Product>> {
+    if (limit > 50) {
+      limit = 50;
+    }
+    const where = {
+      user: {
+        id: req.user?.id,
+      },
+    };
+    return infinityPagination(
+      await this.productsService.findManyWithPagination(
+        {
+          page,
+          limit,
+        },
+        where,
+      ),
+      { page, limit },
+    );
+  }
+
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') id: number): Promise<NullableType<Product>> {
     return this.productsService.findOne({ id });
   }
 
+  @ApiBearerAuth()
+  @Roles(RoleEnum.admin, RoleEnum.user)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   update(
@@ -77,6 +111,9 @@ export class ProductsController {
     return this.productsService.update(id, updateProfileDto);
   }
 
+  @ApiBearerAuth()
+  @Roles(RoleEnum.admin, RoleEnum.user)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: number): Promise<void> {

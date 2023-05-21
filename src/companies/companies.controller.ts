@@ -12,6 +12,7 @@ import {
   ParseIntPipe,
   HttpStatus,
   HttpCode,
+  Req,
 } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
@@ -26,8 +27,6 @@ import { InfinityPaginationResultType } from '../utils/types/infinity-pagination
 import { NullableType } from '../utils/types/nullable.type';
 import { Company } from './entities/companies.entity';
 
-@ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('Company')
 @Controller({
   path: 'companies',
@@ -36,14 +35,15 @@ import { Company } from './entities/companies.entity';
 export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
 
-  @Roles(RoleEnum.admin)
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(RoleEnum.admin, RoleEnum.user)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createProfileDto: CreateCompanyDto): Promise<Company> {
     return this.companiesService.create(createProfileDto);
   }
 
-  @Roles(RoleEnum.admin, RoleEnum.user)
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(
@@ -63,14 +63,47 @@ export class CompaniesController {
     );
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(RoleEnum.admin, RoleEnum.user)
+  @Get('mine')
+  @HttpCode(HttpStatus.OK)
+  async getMyCompanies(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Req() req,
+  ): Promise<InfinityPaginationResultType<Company>> {
+    if (limit > 50) {
+      limit = 50;
+    }
+
+    const where = {
+      user: {
+        id: req.user?.id,
+      },
+    };
+
+    return infinityPagination(
+      await this.companiesService.findManyWithPagination(
+        {
+          page,
+          limit,
+        },
+        where,
+      ),
+      { page, limit },
+    );
+  }
+
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') nit: string): Promise<NullableType<Company>> {
     return this.companiesService.findOne({ nit });
   }
 
-  @Roles(RoleEnum.admin)
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(RoleEnum.admin, RoleEnum.user)
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   update(
@@ -80,7 +113,9 @@ export class CompaniesController {
     return this.companiesService.update(nit, updateProfileDto);
   }
 
-  @Roles(RoleEnum.admin)
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(RoleEnum.admin, RoleEnum.user)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') nit: string): Promise<void> {
