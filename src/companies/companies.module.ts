@@ -20,6 +20,7 @@ export class CompaniesModule {
       .forRoutes(
         { path: '*/companies/:id', method: RequestMethod.DELETE },
         { path: '*/companies/:id', method: RequestMethod.PATCH },
+        { path: '*/companies/:id', method: RequestMethod.GET },
       );
   }
 }

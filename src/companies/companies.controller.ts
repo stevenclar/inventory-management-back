@@ -109,6 +109,9 @@ export class CompaniesController {
     );
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(RoleEnum.admin, RoleEnum.user)
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id') nit: string): Promise<NullableType<Company>> {
@@ -136,12 +139,13 @@ export class CompaniesController {
     return this.companiesService.softDelete(nit);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(RoleEnum.admin, RoleEnum.user)
   @Get(':nit/download')
   // @Header('Content-Type', 'application/pdf')
   @HttpCode(HttpStatus.OK)
   async downloadInventory(@Param('nit') nit: string, @Response() response) {
-    console.log('nit', nit);
-
     const company = await this.companiesService.findOne({ nit });
     if (company) {
       const pdfBuffer = await this.pdfService.createPdf(
@@ -153,6 +157,9 @@ export class CompaniesController {
     }
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(RoleEnum.admin, RoleEnum.user)
   @Get(':nit/:email/send-to-email')
   @HttpCode(HttpStatus.OK)
   async testSendEmail(

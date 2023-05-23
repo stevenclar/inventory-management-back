@@ -27,6 +27,9 @@ import { InfinityPaginationResultType } from '../utils/types/infinity-pagination
 import { NullableType } from '../utils/types/nullable.type';
 import { Product } from './entities/products.entity';
 
+@ApiBearerAuth()
+@Roles(RoleEnum.admin, RoleEnum.user)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('Product')
 @Controller({
   path: 'products',
@@ -35,9 +38,6 @@ import { Product } from './entities/products.entity';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @ApiBearerAuth()
-  @Roles(RoleEnum.admin, RoleEnum.user)
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(
@@ -67,9 +67,6 @@ export class ProductsController {
     );
   }
 
-  @ApiBearerAuth()
-  @Roles(RoleEnum.admin, RoleEnum.user)
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Get('mine')
   @HttpCode(HttpStatus.OK)
   async myProducts(
@@ -103,9 +100,6 @@ export class ProductsController {
     return this.productsService.findOne({ id });
   }
 
-  @ApiBearerAuth()
-  @Roles(RoleEnum.admin, RoleEnum.user)
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   update(
@@ -115,9 +109,6 @@ export class ProductsController {
     return this.productsService.update(id, updateProfileDto);
   }
 
-  @ApiBearerAuth()
-  @Roles(RoleEnum.admin, RoleEnum.user)
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: number): Promise<void> {
