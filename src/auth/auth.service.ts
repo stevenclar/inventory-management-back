@@ -167,12 +167,12 @@ export class AuthService {
       .update(randomStringGenerator())
       .digest('hex');
 
-    await this.mailService.userSignUp({
-      to: dto.email,
-      data: {
-        hash,
-      },
-    });
+    // await this.mailService.userSignUp({
+    //   to: dto.email,
+    //   data: {
+    //     hash,
+    //   },
+    // });
 
     await this.usersService.create({
       ...dto,

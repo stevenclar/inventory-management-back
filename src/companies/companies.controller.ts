@@ -132,7 +132,7 @@ export class CompaniesController {
     return this.companiesService.softDelete(nit);
   }
 
-  @Get('pdf/:id')
+  @Get(':id/download')
   // @Header('Content-Type', 'application/pdf')
   @HttpCode(HttpStatus.OK)
   async downloadInventory(@Param('nit') nit: string, @Response() response) {
