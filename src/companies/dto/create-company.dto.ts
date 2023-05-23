@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, Validate } from 'class-validator';
+import { User } from 'src/users/entities/user.entity';
 import { IsNotExist } from 'src/utils/validators/is-not-exists.validator';
 
 export class CreateCompanyDto {
@@ -21,4 +22,6 @@ export class CreateCompanyDto {
   @ApiProperty({ example: 'Calle falsa #123' })
   @IsNotEmpty()
   address: string | null;
+
+  user?: User | null;
 }

@@ -50,7 +50,11 @@ export class CompaniesController {
   @Roles(RoleEnum.admin, RoleEnum.user)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createProfileDto: CreateCompanyDto): Promise<Company> {
+  create(
+    @Req() request,
+    @Body() createProfileDto: CreateCompanyDto,
+  ): Promise<Company> {
+    createProfileDto.user = request.user;
     return this.companiesService.create(createProfileDto);
   }
 

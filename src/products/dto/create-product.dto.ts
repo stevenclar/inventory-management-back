@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
+import { User } from 'src/users/entities/user.entity';
 
 export class CreateProductDto {
   @ApiProperty({ example: 'myProduct' })
@@ -16,4 +17,6 @@ export class CreateProductDto {
   @ApiProperty({ example: 'Unit' })
   @IsNotEmpty()
   measure: string | null;
+
+  user?: User | null;
 }

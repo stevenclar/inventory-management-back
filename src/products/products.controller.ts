@@ -40,7 +40,11 @@ export class ProductsController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createProfileDto: CreateProductDto): Promise<Product> {
+  create(
+    @Req() request,
+    @Body() createProfileDto: CreateProductDto,
+  ): Promise<Product> {
+    createProfileDto.user = request.user;
     return this.productsService.create(createProfileDto);
   }
 
