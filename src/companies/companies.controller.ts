@@ -132,10 +132,12 @@ export class CompaniesController {
     return this.companiesService.softDelete(nit);
   }
 
-  @Get(':id/download')
+  @Get(':nit/download')
   // @Header('Content-Type', 'application/pdf')
   @HttpCode(HttpStatus.OK)
   async downloadInventory(@Param('nit') nit: string, @Response() response) {
+    console.log('nit', nit);
+
     const company = await this.companiesService.findOne({ nit });
     if (company) {
       const pdfBuffer = await this.pdfService.createPdf(
@@ -147,7 +149,7 @@ export class CompaniesController {
     }
   }
 
-  @Get('send-pdf/:id/:email')
+  @Get(':nit/:email/send-to-email')
   @HttpCode(HttpStatus.OK)
   async testSendEmail(
     @Param('nit') nit: string,
