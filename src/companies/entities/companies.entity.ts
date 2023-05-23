@@ -32,6 +32,9 @@ export class Company extends EntityHelper {
   @Column({ type: String, nullable: true })
   phone: string | null;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  description: string | null;
+
   @OneToMany(() => Inventory, (inventory) => inventory.company, { eager: true })
   inventories?: Inventory[];
 

@@ -23,5 +23,11 @@ export class CreateCompanyDto {
   @IsNotEmpty()
   address: string | null;
 
+  @ApiProperty({
+    example: 'my description about the company',
+  })
+  @IsNotEmpty()
+  description: string | null;
+
   user?: User | null;
 }

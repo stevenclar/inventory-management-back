@@ -13,4 +13,10 @@ export class UpdateCompanyDto {
   @ApiProperty({ example: 'Calle falsa #123' })
   @IsOptional()
   address: string | null;
+
+  @ApiProperty({
+    example: 'my description about the company',
+  })
+  @IsOptional()
+  description: string | null;
 }
