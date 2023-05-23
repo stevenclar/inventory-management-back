@@ -1,59 +1,31 @@
-# NestJS REST API boilerplate 🇺🇦
+# Inventory Management System
 
-![github action status](https://github.com/brocoders/nestjs-boilerplate/actions/workflows/docker-e2e.yml/badge.svg)
+Aplicación que permite gestionar el inventario de empresas y exportarlo en PDF. [Demo](http://inventory-management-revstar.s3-website-us-east-1.amazonaws.com/inventoryManagement/)
 
-## Description
+### Pre-requisitos 📋
 
-NestJS REST API boilerplate for typical project
+Tener instalado node con alguna de las siguientes versiones 14.20.x, 16.13.x and 18.10, npm, y angular cli
 
-[Full documentation here](https://github.com/brocoders/nestjs-boilerplate/blob/main/docs/readme.md)
-
-## Table of Contents
-
-- [Features](#features)
-- [Quick run](#quick-run)
-- [Comfortable development](#comfortable-development)
-- [Links](#links)
-- [Automatic update of dependencies](#automatic-update-of-dependencies)
-- [Database utils](#database-utils)
-- [Tests](#tests)
-
-## Features
-
-- [x] Database ([typeorm](https://www.npmjs.com/package/typeorm)).
-- [x] Seeding.
-- [x] Config Service ([@nestjs/config](https://www.npmjs.com/package/@nestjs/config)).
-- [x] Mailing ([nodemailer](https://www.npmjs.com/package/nodemailer), [@nestjs-modules/mailer](https://www.npmjs.com/package/@nestjs-modules/mailer)).
-- [x] Sign in and sign up via email.
-- [x] Social sign in (Apple, Facebook, Google, Twitter).
-- [x] Admin and User roles.
-- [x] I18N ([nestjs-i18n](https://www.npmjs.com/package/nestjs-i18n)).
-- [x] File uploads. Support local and Amazon S3 drivers.
-- [x] Swagger.
-- [x] E2E and units tests.
-- [x] Docker.
-- [x] CI (Github Actions).
-
-## Quick run
+## Comenzando
 
 ```bash
-git clone --depth 1 https://github.com/brocoders/nestjs-boilerplate.git my-app
-cd my-app/
+git clone https://github.com/stevenclar/inventory-management-back.git
+cd inventory-management-back/
 cp env-example .env
 docker compose up -d
 ```
 
-For check status run
+Ver logs
 
 ```bash
 docker compose logs
 ```
 
-## Comfortable development
+## Desarrollo local facil
 
 ```bash
-git clone --depth 1 https://github.com/brocoders/nestjs-boilerplate.git my-app
-cd my-app/
+git clone https://github.com/stevenclar/inventory-management-back.git
+cd inventory-management-back/
 cp env-example .env
 ```
 
@@ -76,38 +48,27 @@ npm run seed:run
 
 npm run start:dev
 ```
-
-## Links
-
-- Swagger: http://localhost:3000/docs
-- Adminer (client for DB): http://localhost:8080
-- Maildev: http://localhost:1080
-
-## Automatic update of dependencies
-
-If you want to automatically update dependencies, you can connect [Renovate](https://github.com/marketplace/renovate) for your project.
-
 ## Database utils
 
-Generate migration
+Crear migration
 
 ```bash
 npm run migration:generate -- src/database/migrations/CreateNameTable 
 ```
 
-Run migration
+Correr migration
 
 ```bash
 npm run migration:run
 ```
 
-Revert migration
+Revertir migration
 
 ```bash
 npm run migration:revert
 ```
 
-Drop all tables in database
+Eliminar todas las tablas de la base de datos
 
 ```bash
 npm run schema:drop
@@ -129,7 +90,7 @@ npm run test
 npm run test:e2e
 ```
 
-## Tests in Docker
+## Tests en Docker
 
 ```bash
 docker compose -f docker-compose.ci.yaml --env-file env-example -p ci up --build --exit-code-from api && docker compose -p ci rm -svf
@@ -140,3 +101,26 @@ docker compose -f docker-compose.ci.yaml --env-file env-example -p ci up --build
 ```bash
 docker run --rm jordi/ab -n 100 -c 100 -T application/json -H "Authorization: Bearer USER_TOKEN" -v 2 http://<server_ip>:3000/api/v1/users
 ```
+
+## Links
+
+- Swagger: http://localhost:3000/docs
+- Adminer (client for DB): http://localhost:8080
+- Maildev: http://localhost:1080
+
+## Construido con 🛠️
+
+* [NestJs](https://nestjs.com/) - 
+* [pdfmake](http://pdfmake.org/) - Client/server side PDF printing in pure JavaScript
+* [RxJS](https://rxjs.dev/api/) - Librería Javascript de programación reactiva
+
+## Autores ✒️
+
+* **Deivid Steven Gonzalez** - *Desarrollo del proyecto* - [stevenclar](https://github.com/stevenclar)
+## Expresiones de Gratitud 🎁
+
+* Muchas gracias Revstar por la oportunidad 🤓.
+
+---
+⌨️ con ❤️ por [StevenClar](https://github.com/stevenclar) 😊
+
